@@ -4,8 +4,23 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.dark
+          ? ThemeMode.light
+          : ThemeMode.dark;
+    });
+  }
 
   // This widget is the root of your application.
   @override
@@ -28,15 +43,32 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.dark,
+        ),
+      ),
+      themeMode: _themeMode,
+      home: MyHomePage(
+        title: 'Welcome to Smart House ',
+        onToggleTheme: _toggleTheme,
+        themeMode: _themeMode,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    this.onToggleTheme,
+    this.themeMode,
+  });
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -48,6 +80,8 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final VoidCallback? onToggleTheme;
+  final ThemeMode? themeMode;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -55,6 +89,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final TextEditingController _controller = TextEditingController();
+  String _message = "";
+  Color _color = Colors.blue;
 
   void _incrementCounter() {
     setState(() {
@@ -65,6 +102,35 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  void _applyInput() {
+    final text = _controller.text.trim();
+    setState(() {
+      if (text.toLowerCase() == 'avada kedavra') {
+        _counter = 0;
+        _message = 'Keyword "Avada Kedavra" — counter reset to 0';
+        _color = Colors.red;
+      } else {
+        final value = int.tryParse(text);
+        if (value != null) {
+          _counter += value;
+          _message = 'Added $value';
+          _color = value >= 0 ? Colors.green : Colors.orange;
+        } else if (text.isEmpty) {
+          _message = '';
+        } else {
+          _message = 'Input is not a number: "$text"';
+          _color = Colors.blue;
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,6 +150,19 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            tooltip: widget.themeMode == ThemeMode.dark
+                ? 'Light theme'
+                : 'Dark theme',
+            icon: Icon(
+              widget.themeMode == ThemeMode.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: widget.onToggleTheme,
+          ),
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -102,9 +181,46 @@ class _MyHomePageState extends State<MyHomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('You have pushed the button this many times:'),
+            const Text('Enter the max speed of cooler:'),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8.0,
+              ),
+              child: TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Number or text',
+                ),
+                onSubmitted: (_) => _applyInput(),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _applyInput,
+                  child: const Text('Apply'),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear();
+                      _message = '';
+                    });
+                  },
+                  child: const Text('Clear'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(_message, style: TextStyle(color: _color, fontSize: 16)),
+            const SizedBox(height: 24),
+            const Text('Current speed:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
