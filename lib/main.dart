@@ -64,8 +64,8 @@ class _MyAppState extends State<MyApp> {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
-    super.key,
     required this.title,
+    super.key,
     this.onToggleTheme,
     this.themeMode,
   });
@@ -90,7 +90,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final TextEditingController _controller = TextEditingController();
-  String _message = "";
+  String _message = '';
   Color _color = Colors.blue;
 
   void _incrementCounter() {
@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       if (text.toLowerCase() == 'avada kedavra') {
         _counter = 0;
-        _message = 'Keyword "Avada Kedavra" — counter reset to 0';
+  _message = 'Keyword Avada Kedavra — counter reset to 0';
         _color = Colors.red;
       } else {
         final value = int.tryParse(text);
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
         } else if (text.isEmpty) {
           _message = '';
         } else {
-          _message = 'Input is not a number: "$text"';
+          _message = 'Input is not a number: $text';
           _color = Colors.blue;
         }
       }
@@ -205,8 +205,8 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text('Enter the max speed of cooler:'),
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 8.0,
+                horizontal: 24,
+                vertical: 8,
               ),
               child: TextField(
                 controller: _controller,
@@ -247,15 +247,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   FloatingActionButton(
                     onPressed: _incrementCounter,
                     tooltip: 'Increment',
-                    child: const Icon(Icons.add),
                     heroTag: 'increment',
+                    child: const Icon(Icons.add),
                   ),
                   const SizedBox(width: 16),
                   FloatingActionButton(
                     onPressed: _decrementCounter,
                     tooltip: 'Decrement',
-                    child: const Icon(Icons.remove),
                     heroTag: 'decrement',
+                    child: const Icon(Icons.remove),
                   ),
                 ],
               ),
