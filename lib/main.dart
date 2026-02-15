@@ -104,6 +104,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _decrementCounter() {
+    setState(() {
+      if (_counter > 0) {
+        _counter--;
+        _message = 'Decremented';
+        _color = Colors.orange;
+      } else {
+        _message = 'Value cannot be negative';
+        _color = Colors.red;
+      }
+    });
+  }
+
   void _applyInput() {
     final text = _controller.text.trim();
     setState(() {
@@ -114,9 +127,15 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         final value = int.tryParse(text);
         if (value != null) {
-          _counter += value;
-          _message = 'Added $value';
-          _color = value >= 0 ? Colors.green : Colors.orange;
+          if (value < 0) {
+            // negative inputs are not allowed
+            _message = 'Negative values are not allowed';
+            _color = Colors.red;
+          } else {
+            _counter += value;
+            _message = 'Added $value';
+            _color = Colors.green;
+          }
         } else if (text.isEmpty) {
           _message = '';
         } else {
@@ -228,10 +247,23 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+            heroTag: 'increment',
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            onPressed: _decrementCounter,
+            tooltip: 'Decrement',
+            child: const Icon(Icons.remove),
+            heroTag: 'decrement',
+          ),
+        ],
       ),
     );
   }
