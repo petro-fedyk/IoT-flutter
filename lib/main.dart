@@ -238,6 +238,28 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 16),
             Text(_message, style: TextStyle(color: _color, fontSize: 16)),
+            const SizedBox(height: 16),
+            // Center the increment/decrement buttons in the middle of the screen
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FloatingActionButton(
+                    onPressed: _incrementCounter,
+                    tooltip: 'Increment',
+                    child: const Icon(Icons.add),
+                    heroTag: 'increment',
+                  ),
+                  const SizedBox(width: 16),
+                  FloatingActionButton(
+                    onPressed: _decrementCounter,
+                    tooltip: 'Decrement',
+                    child: const Icon(Icons.remove),
+                    heroTag: 'decrement',
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 24),
             const Text('Current speed:'),
             Text(
@@ -247,24 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton(
-            onPressed: _incrementCounter,
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
-            heroTag: 'increment',
-          ),
-          const SizedBox(height: 8),
-          FloatingActionButton(
-            onPressed: _decrementCounter,
-            tooltip: 'Decrement',
-            child: const Icon(Icons.remove),
-            heroTag: 'decrement',
-          ),
-        ],
-      ),
+      // Floating action buttons moved into the body and centered there
     );
   }
 }
