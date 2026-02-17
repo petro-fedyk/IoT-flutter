@@ -56,19 +56,13 @@ class _MyAppState extends State<MyApp> {
       home: MyHomePage(
         title: 'Welcome to Smart House ',
         onToggleTheme: _toggleTheme,
-        themeMode: _themeMode,
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    required this.title,
-    super.key,
-    this.onToggleTheme,
-    this.themeMode,
-  });
+  const MyHomePage({required this.title, super.key, this.onToggleTheme});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -81,17 +75,19 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
   final VoidCallback? onToggleTheme;
-  final ThemeMode? themeMode;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+enum MessageType { none, info, success, error }
+
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final TextEditingController _controller = TextEditingController();
   String _message = '';
-  Color _color = Colors.blue;
+  // Use a semantic message type and obtain colors from the Theme's ColorScheme
+  MessageType _messageType = MessageType.none;
 
   void _incrementCounter() {
     setState(() {
@@ -109,10 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
       if (_counter > 0) {
         _counter--;
         _message = 'Decremented';
-        _color = Colors.orange;
+        _messageType = MessageType.info;
       } else {
         _message = 'Value cannot be negative';
-        _color = Colors.red;
+        _messageType = MessageType.error;
       }
     });
   }
@@ -122,25 +118,25 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       if (text.toLowerCase() == 'avada kedavra') {
         _counter = 0;
-  _message = 'Keyword Avada Kedavra — counter reset to 0';
-        _color = Colors.red;
+        _message = 'Keyword Avada Kedavra — counter reset to 0';
+        _messageType = MessageType.error;
       } else {
         final value = int.tryParse(text);
         if (value != null) {
           if (value < 0) {
             // negative inputs are not allowed
             _message = 'Negative values are not allowed';
-            _color = Colors.red;
+            _messageType = MessageType.error;
           } else {
             _counter += value;
             _message = 'Added $value';
-            _color = Colors.green;
+            _messageType = MessageType.success;
           }
         } else if (text.isEmpty) {
           _message = '';
         } else {
           _message = 'Input is not a number: $text';
-          _color = Colors.blue;
+          _messageType = MessageType.info;
         }
       }
     });
@@ -160,6 +156,21 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final Color messageColor = () {
+      switch (_messageType) {
+        case MessageType.error:
+          return colorScheme.error;
+        case MessageType.success:
+          return colorScheme.primary;
+        case MessageType.info:
+          return colorScheme.secondary;
+        case MessageType.none:
+          return textTheme.bodyMedium?.color ?? colorScheme.onSurface;
+      }
+    }();
+
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -171,11 +182,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            tooltip: widget.themeMode == ThemeMode.dark
+            tooltip: Theme.of(context).brightness == Brightness.dark
                 ? 'Light theme'
                 : 'Dark theme',
             icon: Icon(
-              widget.themeMode == ThemeMode.dark
+              Theme.of(context).brightness == Brightness.dark
                   ? Icons.light_mode
                   : Icons.dark_mode,
             ),
@@ -204,10 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             const Text('Enter the max speed of cooler:'),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: TextField(
                 controller: _controller,
                 decoration: const InputDecoration(
@@ -237,7 +245,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             const SizedBox(height: 16),
-            Text(_message, style: TextStyle(color: _color, fontSize: 16)),
+            Text(
+              _message,
+              style: textTheme.bodyMedium?.copyWith(
+                color: messageColor,
+                fontSize: 16,
+              ),
+            ),
             const SizedBox(height: 16),
             // Center the increment/decrement buttons in the middle of the screen
             Center(
