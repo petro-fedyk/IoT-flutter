@@ -4,8 +4,23 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.dark
+          ? ThemeMode.light
+          : ThemeMode.dark;
+    });
+  }
 
   // This widget is the root of your application.
   @override
@@ -28,15 +43,26 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.dark,
+        ),
+      ),
+      themeMode: _themeMode,
+      home: MyHomePage(
+        title: 'Welcome to Smart House ',
+        onToggleTheme: _toggleTheme,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({required this.title, super.key, this.onToggleTheme});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -48,13 +74,20 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final VoidCallback? onToggleTheme;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+enum MessageType { none, info, success, error }
+
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final TextEditingController _controller = TextEditingController();
+  String _message = '';
+  // Use a semantic message type and obtain colors from the Theme's ColorScheme
+  MessageType _messageType = MessageType.none;
 
   void _incrementCounter() {
     setState(() {
@@ -67,6 +100,54 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _decrementCounter() {
+    setState(() {
+      if (_counter > 0) {
+        _counter--;
+        _message = 'Decremented';
+        _messageType = MessageType.info;
+      } else {
+        _message = 'Value cannot be negative';
+        _messageType = MessageType.error;
+      }
+    });
+  }
+
+  void _applyInput() {
+    final text = _controller.text.trim();
+    setState(() {
+      if (text.toLowerCase() == 'avada kedavra') {
+        _counter = 0;
+        _message = 'Keyword Avada Kedavra — counter reset to 0';
+        _messageType = MessageType.error;
+      } else {
+        final value = int.tryParse(text);
+        if (value != null) {
+          if (value < 0) {
+            // negative inputs are not allowed
+            _message = 'Negative values are not allowed';
+            _messageType = MessageType.error;
+          } else {
+            _counter += value;
+            _message = 'Added $value';
+            _messageType = MessageType.success;
+          }
+        } else if (text.isEmpty) {
+          _message = '';
+        } else {
+          _message = 'Input is not a number: $text';
+          _messageType = MessageType.info;
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -75,6 +156,21 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final Color messageColor = () {
+      switch (_messageType) {
+        case MessageType.error:
+          return colorScheme.error;
+        case MessageType.success:
+          return colorScheme.primary;
+        case MessageType.info:
+          return colorScheme.secondary;
+        case MessageType.none:
+          return textTheme.bodyMedium?.color ?? colorScheme.onSurface;
+      }
+    }();
+
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -84,6 +180,19 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            tooltip: Theme.of(context).brightness == Brightness.dark
+                ? 'Light theme'
+                : 'Dark theme',
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: widget.onToggleTheme,
+          ),
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -102,9 +211,71 @@ class _MyHomePageState extends State<MyHomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('You have pushed the button this many times:'),
+            const Text('Enter the max speed of cooler:'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Number or text',
+                ),
+                onSubmitted: (_) => _applyInput(),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _applyInput,
+                  child: const Text('Apply'),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear();
+                      _message = '';
+                    });
+                  },
+                  child: const Text('Clear'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _message,
+              style: textTheme.bodyMedium?.copyWith(
+                color: messageColor,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Center the increment/decrement buttons in the middle of the screen
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FloatingActionButton(
+                    onPressed: _incrementCounter,
+                    tooltip: 'Increment',
+                    heroTag: 'increment',
+                    child: const Icon(Icons.add),
+                  ),
+                  const SizedBox(width: 16),
+                  FloatingActionButton(
+                    onPressed: _decrementCounter,
+                    tooltip: 'Decrement',
+                    heroTag: 'decrement',
+                    child: const Icon(Icons.remove),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text('Current speed:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
@@ -112,11 +283,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      // Floating action buttons moved into the body and centered there
     );
   }
 }
