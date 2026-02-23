@@ -9,11 +9,11 @@ class AppScaffold extends StatelessWidget {
   final List<Widget>? actions;
 
   const AppScaffold({
-    this.title,
     required this.child,
+    this.title,
+    this.actions,
     this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
     this.scrollable = false,
-    this.actions,
     super.key,
   });
 
