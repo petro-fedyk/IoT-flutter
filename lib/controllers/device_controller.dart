@@ -34,14 +34,12 @@ class DeviceController extends ChangeNotifier {
           name: 'Thermostat',
           type: DeviceType.thermostat,
           isOn: true,
-          temperature: 22.0,
         ),
         DeviceModel(
           id: 'ac-1',
           name: 'Air Conditioner',
           type: DeviceType.airConditioner,
-          isOn: false,
-          temperature: 20.0,
+          temperature: 20,
         ),
         DeviceModel(
           id: 'door-1',
@@ -53,7 +51,6 @@ class DeviceController extends ChangeNotifier {
           id: 'cam-1',
           name: 'Camera',
           type: DeviceType.camera,
-          isOn: false,
         ),
       ];
       await _repo.saveDevicesForUser(userId, _devices);

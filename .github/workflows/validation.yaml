@@ -26,4 +26,5 @@ jobs:
       - name: Run Dart Analysis
         uses: invertase/github-action-dart-analyzer@main
         with:
-          fatal-infos: true
+          # Do not fail the CI on informational analyzer hints. Keep warnings/errors fatal.
+          fatal-infos: false

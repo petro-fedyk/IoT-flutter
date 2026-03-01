@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:lab1/widgets/device_tile.dart';
-import 'package:lab1/widgets/theme_toggle_button.dart';
 import 'package:lab1/controllers/device_controller.dart';
 import 'package:lab1/controllers/home_controller.dart';
+import 'package:lab1/widgets/device_tile.dart';
+import 'package:lab1/widgets/theme_toggle_button.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

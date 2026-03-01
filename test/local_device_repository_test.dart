@@ -1,8 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:lab1/repositories/local_device_repository.dart';
 import 'package:lab1/models/device.dart';
+import 'package:lab1/repositories/local_device_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   late LocalDeviceRepository repo;
@@ -14,7 +13,7 @@ void main() {
   });
 
   test('save and load devices for user', () async {
-    final userId = 'user-1';
+    const userId = 'user-1';
     final devices = [
       DeviceModel(
         id: 'l1',
@@ -28,7 +27,7 @@ void main() {
         name: 'Thermo',
         type: DeviceType.thermostat,
         isOn: true,
-        temperature: 21.0,
+        temperature: 21,
       ),
     ];
 

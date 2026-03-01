@@ -1,8 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:lab1/repositories/local_user_repository.dart';
 import 'package:lab1/models/user.dart';
+import 'package:lab1/repositories/local_user_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   late LocalUserRepository repo;
@@ -14,7 +13,7 @@ void main() {
   });
 
   test('register -> login -> update -> delete user', () async {
-    final create = UserCreateData(
+    const create = UserCreateData(
       firstName: 'Test',
       lastName: 'User',
       email: 'test@example.com',

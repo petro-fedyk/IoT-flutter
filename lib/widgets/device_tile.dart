@@ -13,7 +13,7 @@ class DeviceTile extends StatefulWidget {
 class _DeviceTileState extends State<DeviceTile> {
   late bool _isOn;
   int _brightness = 100;
-  double _temperature = 22.0;
+  double _temperature = 22;
   late String _name;
 
   @override
@@ -37,7 +37,6 @@ class _DeviceTileState extends State<DeviceTile> {
         title: const Text('Rename device'),
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(),
         ),
         actions: [
           TextButton(
@@ -92,7 +91,6 @@ class _DeviceTileState extends State<DeviceTile> {
           SizedBox(
             height: 28,
             child: Slider(
-              min: 0,
               max: 100,
               value: _brightness.toDouble(),
               onChanged: (v) => setState(() => _brightness = v.round()),
@@ -210,7 +208,6 @@ class _DeviceTileState extends State<DeviceTile> {
                 ),
               ),
               Expanded(
-                flex: 1,
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 44),

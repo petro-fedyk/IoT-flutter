@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:lab1/controllers/device_controller.dart';
 import 'package:lab1/controllers/home_controller.dart';
 import 'package:lab1/controllers/login_controller.dart';
 import 'package:lab1/controllers/registration_controller.dart';
-import 'package:lab1/repositories/local_user_repository.dart';
 import 'package:lab1/repositories/local_device_repository.dart';
-import 'package:lab1/controllers/device_controller.dart';
+import 'package:lab1/repositories/local_user_repository.dart';
+import 'package:lab1/screens/edit_profile_screen.dart';
 import 'package:lab1/screens/home_screen.dart';
 import 'package:lab1/screens/login_screen.dart';
 import 'package:lab1/screens/profile_screen.dart';
 import 'package:lab1/screens/register_screen.dart';
 import 'package:lab1/screens/welcome_screen.dart';
-import 'package:lab1/screens/edit_profile_screen.dart';
 import 'package:lab1/theme/theme_controller.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

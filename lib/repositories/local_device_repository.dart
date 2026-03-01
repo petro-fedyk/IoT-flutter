@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lab1/models/device.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Simple device repository stored per-user in SharedPreferences.
 class LocalDeviceRepository {

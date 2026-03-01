@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:lab1/controllers/home_controller.dart';
 import 'package:lab1/widgets/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -47,12 +47,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       gender: _gender,
     );
     if (!mounted) return;
-    if (success)
+    if (success) {
       Navigator.pop(context);
-    else
+    } else {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(home.errorMessage)));
+    }
   }
 
   @override
@@ -79,7 +80,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _gender,
+              initialValue: _gender,
               items: const [
                 DropdownMenuItem(value: 'male', child: Text('Male')),
                 DropdownMenuItem(value: 'female', child: Text('Female')),

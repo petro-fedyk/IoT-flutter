@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:lab1/controllers/home_controller.dart';
 import 'package:lab1/widgets/custom_button.dart';
 import 'package:lab1/widgets/theme_toggle_button.dart';
-import 'package:lab1/controllers/home_controller.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -63,6 +63,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: homeCtrl.isLoading
                         ? () {}
                         : () async {
+                            final navigator = Navigator.of(context);
+                            final messenger = ScaffoldMessenger.of(context);
                             final ok = await showDialog<bool>(
                               context: context,
                               builder: (c) => AlertDialog(
@@ -86,17 +88,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               final success = await homeCtrl.deleteAccount(
                                 user.id,
                               );
-                              if (success)
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  '/login',
-                                );
-                              else
-                                ScaffoldMessenger.of(context).showSnackBar(
+                              if (!mounted) return;
+                              if (success) {
+                                navigator.pushReplacementNamed('/login');
+                              } else {
+                                messenger.showSnackBar(
                                   SnackBar(
                                     content: Text(homeCtrl.errorMessage),
                                   ),
                                 );
+                              }
                             }
                           },
                   ),
