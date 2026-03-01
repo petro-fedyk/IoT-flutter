@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:lab1/controllers/login_controller.dart';
 import 'package:lab1/widgets/app_scaffold.dart';
 import 'package:lab1/widgets/custom_button.dart';
 import 'package:lab1/widgets/custom_text_field.dart';
@@ -24,29 +27,47 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _signIn() {
+  Future<void> _signIn() async {
+    // Use LoginController to perform authentication
+    final loginCtrl = context.read<LoginController>();
+
+    // Local quick validations
     setState(() {
       _userError = null;
       _passwordError = null;
-      final user = _userController.text.trim();
-      final pass = _passwordController.text;
-
-      if (user.isEmpty) {
+      if (_userController.text.trim().isEmpty) {
         _userError = 'Please enter username or email';
       }
-
-      if (pass.length < 6) {
+      if (_passwordController.text.length < 6) {
         _passwordError = 'Password must be at least 6 characters';
       }
-
-      if (_userError == null && _passwordError == null) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
     });
+
+    if (_userError != null || _passwordError != null) return;
+
+    // Call controller login
+    final emailOrUser = _userController.text.trim();
+    final pass = _passwordController.text;
+
+    // Show loading via controller; await result
+    final success = await loginCtrl.login(email: emailOrUser, password: pass);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      final msg = loginCtrl.errorMessage.isNotEmpty
+          ? loginCtrl.errorMessage
+          : 'Login failed';
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loginCtrl = context.watch<LoginController>();
+
     return AppScaffold(
       title: 'Login',
       scrollable: true,
@@ -69,7 +90,12 @@ class _LoginScreenState extends State<LoginScreen> {
             errorText: _passwordError,
           ),
           const SizedBox(height: 16),
-          CustomButton(title: 'Sign In', onPressed: _signIn),
+          CustomButton(
+            title: loginCtrl.state == LoginState.loading
+                ? 'Signing in...'
+                : 'Sign In',
+            onPressed: loginCtrl.state == LoginState.loading ? () {} : _signIn,
+          ),
           TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/register');

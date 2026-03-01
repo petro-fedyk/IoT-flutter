@@ -1,20 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:lab1/widgets/device_tile.dart';
 import 'package:lab1/widgets/theme_toggle_button.dart';
+import 'package:lab1/controllers/device_controller.dart';
+import 'package:lab1/controllers/home_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  static const List<Device> _devices = [
-    Device(name: 'Light', icon: Icons.lightbulb, initiallyOn: true),
-    Device(name: 'Thermostat', icon: Icons.thermostat),
-    Device(name: 'Door Lock', icon: Icons.lock, initiallyOn: true),
-    Device(name: 'Camera', icon: Icons.camera_alt),
-    Device(name: 'Air Conditioner', icon: Icons.ac_unit),
-  ];
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _loaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_loaded) {
+      final homeCtrl = context.read<HomeController>();
+      final deviceCtrl = context.read<DeviceController>();
+      final user = homeCtrl.currentUser;
+      if (user != null) {
+        // Schedule loading after the first frame to avoid calling notifyListeners
+        // during the widget build phase which causes "setState() called during build".
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          deviceCtrl.loadForUser(user.id);
+        });
+      }
+      _loaded = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final deviceCtrl = context.watch<DeviceController>();
+    final devices = deviceCtrl.devices;
+
     final width = MediaQuery.of(context).size.width;
     final crossAxisCount = width >= 1000 ? 4 : (width >= 700 ? 3 : 2);
 
@@ -42,19 +65,23 @@ class HomeScreen extends StatelessWidget {
           children: [
             const Text('Smart Devices', style: TextStyle(fontSize: 18)),
             const SizedBox(height: 12),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+            if (deviceCtrl.isLoading)
+              const Expanded(child: Center(child: CircularProgressIndicator()))
+            else
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemCount: devices.length,
+                  itemBuilder: (context, index) {
+                    final d = devices[index];
+                    return DeviceTile(device: d);
+                  },
                 ),
-                itemCount: _devices.length,
-                itemBuilder: (context, index) {
-                  return DeviceTile(device: _devices[index]);
-                },
               ),
-            ),
           ],
         ),
       ),
