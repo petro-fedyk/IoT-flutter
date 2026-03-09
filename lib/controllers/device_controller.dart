@@ -47,11 +47,7 @@ class DeviceController extends ChangeNotifier {
           type: DeviceType.lock,
           isOn: true,
         ),
-        DeviceModel(
-          id: 'cam-1',
-          name: 'Camera',
-          type: DeviceType.camera,
-        ),
+        DeviceModel(id: 'cam-1', name: 'Camera', type: DeviceType.camera),
       ];
       await _repo.saveDevicesForUser(userId, _devices);
     } else {
@@ -65,8 +61,10 @@ class DeviceController extends ChangeNotifier {
     final idx = _devices.indexWhere((d) => d.id == device.id);
     if (idx == -1) return;
     _devices[idx] = device;
-    if (_userId != null) {
-      await _repo.saveDevicesForUser(_userId!, _devices);
+    // Copy to a local variable so Dart can promote it to non-nullable String.
+    final userId = _userId;
+    if (userId != null) {
+      await _repo.saveDevicesForUser(userId, _devices);
     }
     notifyListeners();
   }
@@ -75,8 +73,9 @@ class DeviceController extends ChangeNotifier {
     final idx = _devices.indexWhere((d) => d.id == deviceId);
     if (idx == -1) return;
     _devices[idx].name = newName;
-    if (_userId != null) {
-      await _repo.saveDevicesForUser(_userId!, _devices);
+    final userId = _userId;
+    if (userId != null) {
+      await _repo.saveDevicesForUser(userId, _devices);
     }
     notifyListeners();
   }
@@ -85,7 +84,10 @@ class DeviceController extends ChangeNotifier {
     final idx = _devices.indexWhere((d) => d.id == deviceId);
     if (idx == -1) return;
     _devices[idx].isOn = !_devices[idx].isOn;
-    if (_userId != null) await _repo.saveDevicesForUser(_userId!, _devices);
+    final userId = _userId;
+    if (userId != null) {
+      await _repo.saveDevicesForUser(userId, _devices);
+    }
     notifyListeners();
   }
 }

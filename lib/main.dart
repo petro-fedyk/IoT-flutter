@@ -21,7 +21,7 @@ void main() async {
   try {
     await repository.init();
   } catch (e) {
-    print('Warning: repository.init() failed: $e');
+    debugPrint('Warning: repository.init() failed: $e');
   }
 
   final deviceRepo = LocalDeviceRepository();

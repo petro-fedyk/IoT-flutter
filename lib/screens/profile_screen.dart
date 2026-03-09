@@ -70,7 +70,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               builder: (c) => AlertDialog(
                                 title: const Text('Delete account'),
                                 content: const Text(
-                                  'Are you sure you want to delete your account?',
+                                  'Are you sure you want to '
+                                  'delete your account?',
                                 ),
                                 actions: [
                                   TextButton(

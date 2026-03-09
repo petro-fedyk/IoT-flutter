@@ -23,8 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final deviceCtrl = context.read<DeviceController>();
       final user = homeCtrl.currentUser;
       if (user != null) {
-        // Schedule loading after the first frame to avoid calling notifyListeners
-        // during the widget build phase which causes "setState() called during build".
         WidgetsBinding.instance.addPostFrameCallback((_) {
           deviceCtrl.loadForUser(user.id);
         });
