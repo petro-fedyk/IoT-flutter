@@ -35,9 +35,7 @@ class _DeviceTileState extends State<DeviceTile> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Rename device'),
-        content: TextField(
-          controller: controller,
-        ),
+        content: TextField(controller: controller),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -89,7 +87,7 @@ class _DeviceTileState extends State<DeviceTile> {
         children: [
           Text('Brightness: $_brightness%', style: textStyle),
           SizedBox(
-            height: 28,
+            height: 25,
             child: Slider(
               max: 100,
               value: _brightness.toDouble(),
@@ -176,7 +174,7 @@ class _DeviceTileState extends State<DeviceTile> {
         borderRadius: BorderRadius.circular(12),
         onTap: _toggle,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(8),
           child: Column(
             children: [
               Expanded(
@@ -210,7 +208,7 @@ class _DeviceTileState extends State<DeviceTile> {
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 44),
+                    constraints: const BoxConstraints(maxHeight: 55),
                     child: controlWidget,
                   ),
                 ),

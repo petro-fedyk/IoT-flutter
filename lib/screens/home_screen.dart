@@ -61,8 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Smart Devices', style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 12),
+            const Text('Smart Devices', style: TextStyle(fontSize: 14)),
+            const SizedBox(height: 10),
             if (deviceCtrl.isLoading)
               const Expanded(child: Center(child: CircularProgressIndicator()))
             else
@@ -70,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
                   ),
                   itemCount: devices.length,
                   itemBuilder: (context, index) {
