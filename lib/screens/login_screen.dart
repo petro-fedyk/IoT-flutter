@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab1/controllers/connectivity_controller.dart';
 import 'package:lab1/controllers/login_controller.dart';
 import 'package:lab1/widgets/app_scaffold.dart';
 import 'package:lab1/widgets/custom_button.dart';
@@ -29,6 +30,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signIn() async {
     // Use LoginController to perform authentication
     final loginCtrl = context.read<LoginController>();
+    final connectivity = context.read<ConnectivityController>();
+
+    if (!connectivity.hasInternet) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('No internet connection')));
+      return;
+    }
 
     // Local quick validations
     setState(() {

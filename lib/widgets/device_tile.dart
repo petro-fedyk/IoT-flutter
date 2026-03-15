@@ -72,6 +72,8 @@ class _DeviceTileState extends State<DeviceTile> {
           return Icons.lock;
         case DeviceType.camera:
           return Icons.camera_alt;
+        case DeviceType.powerStation:
+          return Icons.battery_charging_full;
         default:
           return Icons.device_unknown;
       }
@@ -79,7 +81,16 @@ class _DeviceTileState extends State<DeviceTile> {
 
     // Build a compact control widget depending on device type
     Widget controlWidget;
-    if (widget.device.type == DeviceType.light ||
+    if (widget.device.type == DeviceType.powerStation) {
+      controlWidget = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Tap to view', style: textStyle),
+          const SizedBox(height: 6),
+          const Icon(Icons.open_in_new, size: 16),
+        ],
+      );
+    } else if (widget.device.type == DeviceType.light ||
         widget.device.name.toLowerCase().contains('light') ||
         widget.device.name.toLowerCase().contains('lamp')) {
       controlWidget = Column(
@@ -172,7 +183,13 @@ class _DeviceTileState extends State<DeviceTile> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: _toggle,
+        onTap: () {
+          if (widget.device.type == DeviceType.powerStation) {
+            Navigator.pushNamed(context, '/power-station');
+          } else {
+            _toggle();
+          }
+        },
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Column(

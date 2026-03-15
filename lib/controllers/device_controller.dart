@@ -48,10 +48,29 @@ class DeviceController extends ChangeNotifier {
           isOn: true,
         ),
         DeviceModel(id: 'cam-1', name: 'Camera', type: DeviceType.camera),
+        DeviceModel(
+          id: 'ps-1',
+          name: 'Power Station',
+          type: DeviceType.powerStation,
+        ),
       ];
       await _repo.saveDevicesForUser(userId, _devices);
     } else {
       _devices = stored;
+      // Migration: ensure Power Station exists for existing users
+      final hasPowerStation = _devices.any(
+        (d) => d.type == DeviceType.powerStation || d.id == 'ps-1',
+      );
+      if (!hasPowerStation) {
+        _devices.add(
+          DeviceModel(
+            id: 'ps-1',
+            name: 'Power Station',
+            type: DeviceType.powerStation,
+          ),
+        );
+        await _repo.saveDevicesForUser(userId, _devices);
+      }
     }
     _isLoading = false;
     notifyListeners();
