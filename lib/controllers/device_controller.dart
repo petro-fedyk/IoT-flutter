@@ -6,12 +6,19 @@ class DeviceController extends ChangeNotifier {
   final LocalDeviceRepository _repo;
   List<DeviceModel> _devices = [];
   String? _userId;
+  String? _loadedForUser;
   bool _isLoading = false;
 
   DeviceController({required LocalDeviceRepository repo}) : _repo = repo;
 
   List<DeviceModel> get devices => List.unmodifiable(_devices);
   bool get isLoading => _isLoading;
+
+  void ensureLoaded(String userId) {
+    if (_loadedForUser == userId) return;
+    _loadedForUser = userId;
+    loadForUser(userId);
+  }
 
   Future<void> loadForUser(String userId) async {
     _isLoading = true;

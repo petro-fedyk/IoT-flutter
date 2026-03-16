@@ -3,6 +3,7 @@ import 'package:lab1/controllers/connectivity_controller.dart';
 import 'package:lab1/controllers/device_controller.dart';
 import 'package:lab1/controllers/home_controller.dart';
 import 'package:lab1/controllers/login_controller.dart';
+import 'package:lab1/controllers/lock_controller.dart';
 import 'package:lab1/controllers/power_station_controller.dart';
 import 'package:lab1/controllers/registration_controller.dart';
 import 'package:lab1/repositories/local_device_repository.dart';
@@ -63,6 +64,11 @@ class MyApp extends StatelessWidget {
           create: (_) => DeviceController(repo: deviceRepository),
         ),
         ChangeNotifierProvider(create: (_) => ConnectivityController()),
+        ChangeNotifierProvider(
+          create: (_) => LockController(
+            apiUrl: 'http://192.168.31.114:5000/api/shafa_data/',
+          ),
+        ),
         ChangeNotifierProvider(
           create: (_) => PowerStationController(
             brokerHost: '192.168.10.216',

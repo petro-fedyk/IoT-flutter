@@ -6,51 +6,19 @@ import 'package:lab1/widgets/device_tile.dart';
 import 'package:lab1/widgets/theme_toggle_button.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  bool _loaded = false;
-  bool? _wasOnline;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_loaded) {
-      final homeCtrl = context.read<HomeController>();
-      final deviceCtrl = context.read<DeviceController>();
-      final user = homeCtrl.currentUser;
-      if (user != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          deviceCtrl.loadForUser(user.id);
-        });
-      }
-      _loaded = true;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final homeCtrl = context.watch<HomeController>();
     final deviceCtrl = context.watch<DeviceController>();
     final connectivity = context.watch<ConnectivityController>();
-    final devices = deviceCtrl.devices;
-    final isOnline = connectivity.hasInternet;
-
-    if (_wasOnline != null && _wasOnline != isOnline) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final message = isOnline
-            ? 'Internet connection restored'
-            : 'Internet lost: MQTT unavailable';
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
-      });
+    final user = homeCtrl.currentUser;
+    if (user != null) {
+      deviceCtrl.ensureLoaded(user.id);
     }
-    _wasOnline = isOnline;
+    final devices = deviceCtrl.devices;
 
     final width = MediaQuery.of(context).size.width;
     final crossAxisCount = width >= 1000 ? 4 : (width >= 700 ? 3 : 2);

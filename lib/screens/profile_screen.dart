@@ -4,14 +4,8 @@ import 'package:lab1/widgets/custom_button.dart';
 import 'package:lab1/widgets/theme_toggle_button.dart';
 import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
-
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final homeCtrl = context.watch<HomeController>();
@@ -89,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               final success = await homeCtrl.deleteAccount(
                                 user.id,
                               );
-                              if (!mounted) return;
+                              if (!context.mounted) return;
                               if (success) {
                                 navigator.pushReplacementNamed('/login');
                               } else {
