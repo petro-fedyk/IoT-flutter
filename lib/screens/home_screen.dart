@@ -74,8 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             const Text('Smart Devices', style: TextStyle(fontSize: 14)),
             const SizedBox(height: 10),
@@ -88,21 +87,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             if (deviceCtrl.isLoading)
-              const Expanded(child: Center(child: CircularProgressIndicator()))
+              const SizedBox(
+                height: 180,
+                child: Center(child: CircularProgressIndicator()),
+              )
             else
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: devices.length,
-                  itemBuilder: (context, index) {
-                    final d = devices[index];
-                    return DeviceTile(device: d);
-                  },
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
                 ),
+                itemCount: devices.length,
+                itemBuilder: (context, index) {
+                  final d = devices[index];
+                  return DeviceTile(device: d);
+                },
               ),
           ],
         ),

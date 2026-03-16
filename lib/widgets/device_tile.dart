@@ -163,6 +163,12 @@ class _DeviceTileState extends State<DeviceTile> {
           const Text('°C'),
         ],
       );
+    } else if (widget.device.type == DeviceType.lock) {
+      final statusText = _isOn ? 'Locked' : 'Unlocked';
+      controlWidget = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [Text(statusText, style: textStyle)],
+      );
     } else {
       controlWidget = Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -186,6 +192,8 @@ class _DeviceTileState extends State<DeviceTile> {
         onTap: () {
           if (widget.device.type == DeviceType.powerStation) {
             Navigator.pushNamed(context, '/power-station');
+          } else if (widget.device.type == DeviceType.lock) {
+            Navigator.pushNamed(context, '/lock');
           } else {
             _toggle();
           }

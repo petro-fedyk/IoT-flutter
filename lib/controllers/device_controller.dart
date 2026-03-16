@@ -43,7 +43,7 @@ class DeviceController extends ChangeNotifier {
         ),
         DeviceModel(
           id: 'door-1',
-          name: 'Door Lock',
+          name: 'Shafa Lock',
           type: DeviceType.lock,
           isOn: true,
         ),
@@ -57,6 +57,27 @@ class DeviceController extends ChangeNotifier {
       await _repo.saveDevicesForUser(userId, _devices);
     } else {
       _devices = stored;
+      var renamed = false;
+      for (final device in _devices) {
+        if (device.type == DeviceType.lock && device.name == 'Door Lock') {
+          device.name = 'Shafa Lock';
+          renamed = true;
+        }
+      }
+      final hasLock = _devices.any(
+        (d) => d.type == DeviceType.lock || d.id == 'door-1',
+      );
+      if (!hasLock) {
+        _devices.add(
+          DeviceModel(
+            id: 'door-1',
+            name: 'Shafa Lock',
+            type: DeviceType.lock,
+            isOn: true,
+          ),
+        );
+        renamed = true;
+      }
       // Migration: ensure Power Station exists for existing users
       final hasPowerStation = _devices.any(
         (d) => d.type == DeviceType.powerStation || d.id == 'ps-1',
@@ -69,6 +90,9 @@ class DeviceController extends ChangeNotifier {
             type: DeviceType.powerStation,
           ),
         );
+        await _repo.saveDevicesForUser(userId, _devices);
+      }
+      if (renamed) {
         await _repo.saveDevicesForUser(userId, _devices);
       }
     }
