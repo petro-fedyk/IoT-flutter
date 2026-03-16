@@ -10,6 +10,7 @@ import 'package:lab1/repositories/local_user_repository.dart';
 import 'package:lab1/screens/edit_profile_screen.dart';
 import 'package:lab1/screens/home_screen.dart';
 import 'package:lab1/screens/login_screen.dart';
+import 'package:lab1/screens/lock_screen.dart';
 import 'package:lab1/screens/power_station_screen.dart';
 import 'package:lab1/screens/profile_screen.dart';
 import 'package:lab1/screens/register_screen.dart';
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
               '/profile': (_) => const ProfileScreen(),
               '/profile/edit': (_) => const EditProfileScreen(),
               '/power-station': (_) => const PowerStationScreen(),
+              '/lock': (_) => const LockScreen(),
             },
           );
         },
