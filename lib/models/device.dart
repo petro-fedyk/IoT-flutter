@@ -1,4 +1,12 @@
-enum DeviceType { light, thermostat, airConditioner, lock, camera, other }
+enum DeviceType {
+  light,
+  thermostat,
+  airConditioner,
+  lock,
+  camera,
+  powerStation,
+  other,
+}
 
 class DeviceModel {
   final String id;

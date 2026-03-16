@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab1/controllers/connectivity_controller.dart';
 import 'package:lab1/controllers/device_controller.dart';
 import 'package:lab1/controllers/home_controller.dart';
 import 'package:lab1/widgets/device_tile.dart';
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _loaded = false;
+  bool? _wasOnline;
 
   @override
   void didChangeDependencies() {
@@ -34,7 +36,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final deviceCtrl = context.watch<DeviceController>();
+    final connectivity = context.watch<ConnectivityController>();
     final devices = deviceCtrl.devices;
+    final isOnline = connectivity.hasInternet;
+
+    if (_wasOnline != null && _wasOnline != isOnline) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final message = isOnline
+            ? 'Internet connection restored'
+            : 'Internet lost: MQTT unavailable';
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      });
+    }
+    _wasOnline = isOnline;
 
     final width = MediaQuery.of(context).size.width;
     final crossAxisCount = width >= 1000 ? 4 : (width >= 700 ? 3 : 2);
@@ -63,6 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text('Smart Devices', style: TextStyle(fontSize: 14)),
             const SizedBox(height: 10),
+            if (!connectivity.hasInternet)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Offline: MQTT data may be unavailable',
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+              ),
             if (deviceCtrl.isLoading)
               const Expanded(child: Center(child: CircularProgressIndicator()))
             else
