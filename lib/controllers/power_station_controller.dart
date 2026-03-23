@@ -69,13 +69,11 @@ class PowerStationController extends ChangeNotifier {
     _isConnecting = true;
     _status = 'Connecting...';
     notifyListeners();
-
     _client.port = 1883;
     _client.keepAlivePeriod = 20;
     _client.logging(on: false);
     _client.onConnected = _handleConnected;
     _client.onDisconnected = _handleDisconnected;
-
     final message = MqttConnectMessage()
         .withClientIdentifier(_clientId)
         .startClean()
