@@ -25,6 +25,24 @@ class DeviceModel {
     this.temperature = 22.0,
   });
 
+  DeviceModel copyWith({
+    String? id,
+    String? name,
+    DeviceType? type,
+    bool? isOn,
+    int? brightness,
+    double? temperature,
+  }) {
+    return DeviceModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      isOn: isOn ?? this.isOn,
+      brightness: brightness ?? this.brightness,
+      temperature: temperature ?? this.temperature,
+    );
+  }
+
   factory DeviceModel.fromJson(Map<String, dynamic> json) {
     return DeviceModel(
       id: json['id'] as String,
