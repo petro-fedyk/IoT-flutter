@@ -7,10 +7,10 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
+    return const AppScaffold(
       title: 'Register',
       scrollable: true,
-      child: const RegisterForm(),
+      child: RegisterForm(),
     );
   }
 }

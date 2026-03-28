@@ -29,6 +29,7 @@ class DeviceTile extends StatelessWidget {
       ),
     );
 
+    if (!context.mounted) return;
     if (res != null && res.isNotEmpty) {
       context.read<DeviceController>().renameDevice(device.id, res);
     }

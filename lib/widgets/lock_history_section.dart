@@ -13,7 +13,7 @@ class LockHistorySection extends StatelessWidget {
       events: [
         LockEvent(
           id: 1,
-          time: DateTime(2025, 5, 2, 18, 0),
+          time: DateTime(2025, 5, 2, 18),
           unlockMethod: 'Keypad',
           isSuccess: true,
           user: 'admin',
