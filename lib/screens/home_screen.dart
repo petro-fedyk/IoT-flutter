@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:iot_torch_plugin/iot_torch_plugin.dart';
 import 'package:lab1/controllers/connectivity_controller.dart';
 import 'package:lab1/controllers/device_controller.dart';
 import 'package:lab1/controllers/home_controller.dart';
@@ -25,7 +27,43 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: GestureDetector(
+          // Secret trigger: long-press on the title to toggle the torch.
+          onLongPress: () async {
+            // On non-Android platforms show a warning dialog.
+            if (defaultTargetPlatform != TargetPlatform.android) {
+              if (!context.mounted) return;
+              await showDialog<void>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Torch not available'),
+                    content: const Text(
+                      'Flashlight control is not supported on this '
+                      'platform.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+
+            final isOn = await IotTorchPlugin.toggleTorch();
+            if (!context.mounted) return;
+
+            final message = isOn ? 'Flashlight ON' : 'Flashlight OFF';
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message)));
+          },
+          child: const Text('Home'),
+        ),
         actions: [
           IconButton(
             tooltip: 'Profile',
