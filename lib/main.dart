@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lab1/controllers/connectivity_controller.dart';
 import 'package:lab1/controllers/device_controller.dart';
 import 'package:lab1/controllers/home_controller.dart';
+import 'package:lab1/controllers/lock_controller.dart';
 import 'package:lab1/controllers/login_controller.dart';
 import 'package:lab1/controllers/power_station_controller.dart';
 import 'package:lab1/controllers/registration_controller.dart';
@@ -9,6 +10,7 @@ import 'package:lab1/repositories/local_device_repository.dart';
 import 'package:lab1/repositories/local_user_repository.dart';
 import 'package:lab1/screens/edit_profile_screen.dart';
 import 'package:lab1/screens/home_screen.dart';
+import 'package:lab1/screens/lock_screen.dart';
 import 'package:lab1/screens/login_screen.dart';
 import 'package:lab1/screens/power_station_screen.dart';
 import 'package:lab1/screens/profile_screen.dart';
@@ -63,6 +65,11 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => ConnectivityController()),
         ChangeNotifierProvider(
+          create: (_) => LockController(
+            apiUrl: 'http://192.168.31.114:5000/api/shafa_data/',
+          ),
+        ),
+        ChangeNotifierProvider(
           create: (_) => PowerStationController(
             brokerHost: '192.168.10.216',
             topic: 'scada/lab3/test',
@@ -98,6 +105,7 @@ class MyApp extends StatelessWidget {
               '/profile': (_) => const ProfileScreen(),
               '/profile/edit': (_) => const EditProfileScreen(),
               '/power-station': (_) => const PowerStationScreen(),
+              '/lock': (_) => const LockScreen(),
             },
           );
         },

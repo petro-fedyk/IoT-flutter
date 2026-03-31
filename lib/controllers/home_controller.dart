@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
-
 import 'package:lab1/models/user.dart';
 import 'package:lab1/repositories/user_repository.dart';
 import 'package:lab1/utils/exceptions.dart';
@@ -28,13 +26,11 @@ class HomeController extends ChangeNotifier {
 
   StreamSubscription<User?>? _userSub;
 
-  // Getters
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
   bool get hasUser => _currentUser != null;
 
-  /// Initialize by loading current user
   Future<void> _initialize() async {
     try {
       final user = await _repository.getCurrentUser();
@@ -52,7 +48,6 @@ class HomeController extends ChangeNotifier {
     super.dispose();
   }
 
-  /// Update user profile
   Future<bool> updateProfile({
     required String firstName,
     required String lastName,
@@ -109,7 +104,6 @@ class HomeController extends ChangeNotifier {
     }
   }
 
-  /// Delete user account
   Future<bool> deleteAccount(String userId) async {
     _isLoading = true;
     _errorMessage = '';
@@ -129,16 +123,13 @@ class HomeController extends ChangeNotifier {
     }
   }
 
-  /// Watch for changes to current user
   Stream<User?> watchCurrentUser() => _repository.watchCurrentUser();
 
-  /// Clear error message
   void clearError() {
     _errorMessage = '';
     notifyListeners();
   }
 
-  /// Reload user data from storage
   Future<void> reloadUser() async {
     try {
       final user = await _repository.getCurrentUser();
